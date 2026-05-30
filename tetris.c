@@ -1,4 +1,4 @@
-// Código nível aventureiro
+// Código nível Mestre
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -48,6 +48,8 @@ void inserirPilha(Pilha *pi, Fila *f);
 void removerPilha(Pilha *pi);
 void mostrarPilha(Pilha *pi);
 
+void trocarPeca(Fila *f, Pilha *pi);
+void trocarTresPecas(Fila *f, Pilha *pi);
 
 int main() {
     srand((unsigned int)time(NULL));
@@ -88,6 +90,17 @@ int main() {
                 removerPilha(&pi);
                 break;
             }
+            case 4: {
+                break;
+            }
+            case 5: {
+                trocarPeca(&f, &pi);
+                break;
+            }
+            case 6: {
+                trocarTresPecas(&f, &pi);
+                break;
+            }
             case 0:
                 printf("Saindo do jogo...\n");
                 break;
@@ -104,6 +117,9 @@ void exibirMenu() {
     printf("1 - Jogar peça\n");
     printf("2 - Reservar peça\n");
     printf("3 - Jogar peça reservada\n");
+    printf("4 - Exibir estado atual\n");
+    printf("5 - Trocar peça atual\n");
+    printf("6 - Trocar 3 peças\n");
     printf("0 - Sair\n");
     printf("Digite sua escolha: ");
     scanf("%d", &opcao);
@@ -208,7 +224,7 @@ void removerPilha(Pilha *pi){
     printf("Peça usada: [%c %d]\n", p.nome, p.id);
 }
 
-//Mostra todas as peças da pilha
+// Mostra todas as peças da pilha
 void mostrarPilha(Pilha *pi){
     if(pilhaVazia(pi)){
         printf("Pilha vazia! Não há peças reservadas para mostrar. \n");
@@ -218,4 +234,33 @@ void mostrarPilha(Pilha *pi){
     for (int i = pi->topo; i >= 0; i--){
         printf("[%c %d] ", pi->itens[i].nome, pi->itens[i].id);
     }
+}
+
+// Troca a primeira peça da fila e da pilha
+void trocarPeca(Fila *f, Pilha *pi){
+    if(pilhaVazia(pi)){
+        printf("Pilha vazia! Reserve uma peça para poder trocar. \n");
+        return;
+    } else {
+        Peca auxiliar = f->itens[f->inicio];
+        f->itens[f->inicio] = pi->itens[pi->topo];
+        pi->itens[pi->topo] = auxiliar;
+        printf("Peças trocadas. \n");
+    }
+}
+
+// Troca as três primeiras peças da fila e da pilha
+void trocarTresPecas(Fila *f, Pilha *pi){
+    if(pi->topo < 2){
+        printf("Peças insuficientes reservadas! Você deve ter 3 peças reservadas para realizar essa ação.\n");
+        return;
+    }
+    for(int i = 0; i < 3; i++){
+        int idxFila = (f->inicio + i) % MAX;
+        int idxPilha = pi->topo - i;
+        Peca auxiliar = f->itens[idxFila];
+        f->itens[idxFila] = pi->itens[idxPilha];
+        pi->itens[idxPilha] = auxiliar;
+    }
+    printf("Troca realizada entre os 3 primeiros da fila e os 3 da pilha.\n");
 }
